@@ -1,3 +1,5 @@
+package servers;
+
 public interface ClusterInterface {
 
     public void sendMessage();

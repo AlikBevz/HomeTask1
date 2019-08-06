@@ -1,3 +1,5 @@
+package servers;
+
 public class Node {
     private int number;
     private boolean status;

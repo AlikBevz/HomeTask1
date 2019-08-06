@@ -1,63 +1,69 @@
+import search.FailSearchEngine;
+import servers.Cluster;
+import servers.Node;
+import servers.Optional;
+import servers.Server;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
 
     public static void main(String[] args) {
 
 
-
-        Node nodeFirstForFirstServer = new Node(0, false);
-        Node nodeSecondForFirstServer = new Node(1, false);
-        Node nodeThirdForFirstServer = new Node(2, false);
-
-        List<Node> nodesForFirstServer= new ArrayList<>();
-
-        nodesForFirstServer.add(nodeFirstForFirstServer);
-        nodesForFirstServer.add(nodeSecondForFirstServer);
-        nodesForFirstServer.add(nodeThirdForFirstServer);
-
-
-        Node nodeFirstForSecondServer = new Node(0, false);
-        Node nodeSecondForSecondServer = new Node(1, false);
-        Node nodeThirdForSecondServer = new Node(2, false);
-        Node nodeFourthForSecondServer = new Node(3, false);
-        Node nodeFifthForSecondServer = new Node(4, false);
-
-
-        List<Node> nodesForSecondServer= new ArrayList<>();
-
-        nodesForSecondServer.add(nodeFirstForSecondServer);
-        nodesForSecondServer.add(nodeSecondForSecondServer);
-        nodesForSecondServer.add(nodeThirdForSecondServer);
-        nodesForSecondServer.add(nodeFourthForSecondServer);
-        nodesForSecondServer.add(nodeFifthForSecondServer);
-
-
-
-
-        ServerWithAraylist serverFirstWithAraylist = new ServerWithAraylist(0, nodesForFirstServer);
-
-
-        ServerWithAraylist serverSecondWithAraylist = new ServerWithAraylist(1, nodesForSecondServer);
-
-
-        List<ServerWithAraylist> servers = new ArrayList<>();
-        servers.add(serverFirstWithAraylist);
-        servers.add(serverSecondWithAraylist);
-
-        Cluster cluster = new Cluster(servers);
-
+        Cluster cluster = new Cluster();
         FailSearchEngine failSearchEngine = new FailSearchEngine(cluster);
 
+        List<Optional<Server>> optionalListForServer;
+
+        System.out.println("Amount of server is  " + cluster.getAmountOfServerInCluster());
+
+        //optionalListForServer = cluster.formedServerForCluster();
+        cluster.setOptionalListForServer(cluster.formedServerForCluster());
+
+        cluster.formedNodeForServersInCluster();
+
+        cluster.printCluster();
 
         cluster.sendMessage();
 
-        cluster.searchAllNodeInServers();
+        System.out.println();
+        System.out.println("AFTER SEND MESSAGE");
+
+        cluster.printCluster();
 
         failSearchEngine.search();
 
 
+
+//        for (Optional<Server> serverOptional : cluster.getOptionalListForServer()) {
+//
+////            System.out.println();
+////            System.out.println("Server number - " + serverOptional.get().getNumber());
+////            System.out.println("Amount node in server is  " + serverOptional.get().getAmountOfNode());
+//            serverOptional.get().setOptionalListOfNode(serverOptional.get().formNodeForServer());
+//
+//        }
+//
+//        //System.out.println(cluster.getOptionalListForServer().get(0).get().getOptionalListOfNode().get(0).get().getNumber());
+//
+//        System.out.println();System.out.println();
+
+
+//        for (Optional<Server> serverOptional : cluster.getOptionalListForServer()) {
+//
+//            System.out.println();
+//
+//            System.out.println("server number - " + serverOptional.get().getNumber() + " Amount of node is  " + serverOptional.get().getOptionalListOfNode().size());
+//
+//            for (Optional<Node> nodeOptional : serverOptional.get().getOptionalListOfNode()){
+//
+//                System.out.println("node number - " + nodeOptional.get().getNumber() + " status is " + nodeOptional.get().getStatus() + " and presents is " + nodeOptional.isPresent());
+//
+//            }
+//        }
 
     }
 }
