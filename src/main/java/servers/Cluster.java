@@ -1,20 +1,27 @@
 package servers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import exception.RandomNodeException;
 import exception.RandomServerException;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Cluster {
 
+    transient Optional<Server> serverOptional;
     List<Optional<Server>> optionalListForServer = new ArrayList<>();
-    Optional<Server> serverOptional;
+
+
+
 
     private static final Random RANDOM = new Random();
 
-    private int amountOfServerInCluster = RANDOM.nextInt(10);
+    transient private int amountOfServerInCluster = RANDOM.nextInt(10);
 
     public Cluster() {
     }
@@ -64,7 +71,12 @@ public class Cluster {
 
             System.out.println();
 
-            System.out.println("server number - " + serverOptional.get().getNumber() + " All Amount of node is  " + serverOptional.get().getAmountOfNode()/*get().getOptionalListOfNode().size()*/);
+            if (serverOptional.get().getAmountOfNode()> 0){
+
+                System.out.println("server number - " + serverOptional.get().getNumber() + " total number of nodes is  " + serverOptional.get().getAmountOfNode() +
+                               " but now is presented such as:  ");}
+
+               else System.out.println("server number - " + serverOptional.get().getNumber() + " total number of nodes is  " + serverOptional.get().getAmountOfNode());
 
             for (Optional<Node> nodeOptional : serverOptional.get().getOptionalListOfNode()) {
 
@@ -78,7 +90,7 @@ public class Cluster {
     public void sendMessage() {
 
         try {
-            int randomForServer = (int) (Math.random() * /*this.getOptionalListForServer().size() - 1 */5);
+            int randomForServer = (int) (Math.random() * this.getOptionalListForServer().size() - 1);
 
             if (randomForServer > this.getOptionalListForServer().size() - 1) {
                 throw new RandomServerException();
@@ -93,37 +105,44 @@ public class Cluster {
             }
 
 
-              for (int i = randomForNode; i < this.getOptionalListForServer().get(randomForServer).get().getOptionalListOfNode().size(); i++) {
+            for (int i = randomForNode; i < this.getOptionalListForServer().get(randomForServer).get().getOptionalListOfNode().size(); i++) {
 
 
-                  this.getOptionalListForServer().get(randomForServer).get().getOptionalListOfNode().get(i).get().setStatus(true);
+                this.getOptionalListForServer().get(randomForServer).get().getOptionalListOfNode().get(i).get().setStatus(true);
 
-              }
+            }
 
-              for (int i = randomForServer+1; i < this.getOptionalListForServer().size(); i++){
+            for (int i = randomForServer+1; i < this.getOptionalListForServer().size(); i++){
 
                 for (int j = 0; j < this.getOptionalListForServer().get(i).get().getOptionalListOfNode().size(); j++){
 
                     this.getOptionalListForServer().get(i).get().getOptionalListOfNode().get(j).get().setStatus(true);
                 }
 
-              }
+            }
 
 
 
         }
+
+        catch(ArrayIndexOutOfBoundsException e){
+
+            System.out.println();
+            System.out.println("NO SUCH NODE IN SERVER WHICH RECEIVE SEND MESSAGE");
+        }
+
         catch(RandomServerException e){
-               System.out.println();
-               System.out.println("NO SUCH NUMBER OF SERVER IN CLUSTER WHICH RECEIVE SEND MESSAGE ");
-            }
+            System.out.println();
+            System.out.println("NO SUCH NUMBER OF SERVER IN CLUSTER WHICH RECEIVE SEND MESSAGE ");
+        }
 
         catch(RandomNodeException e){
-                System.out.println();
-                System.out.println("NO SUCH NODE IN SERVER WHICH RECEIVE SEND MESSAGE");
-            }
-
-
+            System.out.println();
+            System.out.println("NO SUCH NODE IN SERVER WHICH RECEIVE SEND MESSAGE");
         }
+
+
+    }
 
     public boolean isFailed(int serverNumber, int nodeNumber){
 
@@ -134,7 +153,19 @@ public class Cluster {
 
     }
 
+    public void toJSONinFile(String fileName) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        FileWriter fileWriter = new FileWriter(fileName);
+
+        gson.toJson(this, fileWriter);
+
+        fileWriter.flush();
+
+        fileWriter.close();
+
+
+    }
+
 
 }
-
 

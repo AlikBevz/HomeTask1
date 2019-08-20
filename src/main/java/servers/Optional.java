@@ -1,10 +1,13 @@
 package servers;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.NoSuchElementException;
 
 
 public class Optional <T>{
 
+    @SerializedName("Optional")
     T value;
 
     public Optional (T value){
@@ -25,3 +28,4 @@ public class Optional <T>{
 
 
 }
+

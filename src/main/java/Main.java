@@ -4,13 +4,14 @@ import servers.Node;
 import servers.Optional;
 import servers.Server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
 
         Cluster cluster = new Cluster();
@@ -27,12 +28,16 @@ public class Main {
 
         cluster.printCluster();
 
+        cluster.toJSONinFile("beforeSendMessage.log");
+
         cluster.sendMessage();
 
         System.out.println();
         System.out.println("AFTER SEND MESSAGE");
 
         cluster.printCluster();
+
+        cluster.toJSONinFile("afterSendMessage.log");
 
         failSearchEngine.search();
 
@@ -42,3 +47,4 @@ public class Main {
 
     }
 }
+

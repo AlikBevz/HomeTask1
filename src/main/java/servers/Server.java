@@ -1,17 +1,29 @@
 package servers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Server {
+    @SerializedName("numberServer")
     private int number;
+
+
     private List<Optional<Node>> optionalListOfNode = new ArrayList<>();
-    Optional <Node> nodeOptional;
+
+    transient Optional <Node> nodeOptional;
 
     private static final Random RANDOM = new Random();
 
-    private int amountOfNodeInServer = RANDOM.nextInt(10);
+     transient private int amountOfNodeInServer = RANDOM.nextInt(10);
 
 
     public Server(int number, List<Optional<Node>> optionalListOfNode) {
@@ -50,16 +62,16 @@ public class Server {
         return nodeOptional;
     }
 
-    public  List<Optional<Node>>  formNodeForServer(){
 
-       for (int i = 0; i < amountOfNodeInServer; i++) {
+    public  List<Optional<Node>>  formNodeForServer() {
+
+        for (int i = 0; i < amountOfNodeInServer; i++) {
 
             if (Math.random() > 0.5) {
 
                 nodeOptional = new Optional<>(new Node(i, false));
 
-               // System.out.println("Node number - " + nodeOptional.get().getNumber() + " has status - " + nodeOptional.get().getStatus() + "  and present is - " +
-                 //       nodeOptional.isPresent());
+
 
                 optionalListOfNode.add(nodeOptional);
 
@@ -67,13 +79,28 @@ public class Server {
 
             } else {
                 nodeOptional = new Optional<>(null);
-                //System.out.println("Node number  - " + i + " present is -" + nodeOptional.isPresent());
+
             }
 
 
         }
 
-      return optionalListOfNode;
+        return optionalListOfNode;
+    }
+
+    public void toJson()throws IOException {
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        FileWriter fileWriter = new FileWriter("test.log");
+
+        gson.toJson(optionalListOfNode, fileWriter);
+
+        fileWriter.flush();
+
+        fileWriter.close();
+
+
+
     }
 
 }
